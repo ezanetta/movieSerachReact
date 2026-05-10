@@ -22,12 +22,14 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
-          <span className="text-yellow-400 text-2xl font-bold tracking-tight whitespace-nowrap">
-            🎬 CineSearch
-          </span>
-          <div className="flex-1">
-            <SearchBar onSearch={search} loading={loading} />
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <span className="text-yellow-400 text-xl font-bold tracking-tight shrink-0">
+              🎬 CineSearch
+            </span>
+            <div className="flex-1">
+              <SearchBar onSearch={search} loading={loading} />
+            </div>
           </div>
         </div>
       </header>

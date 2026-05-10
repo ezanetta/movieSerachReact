@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { MovieDetail } from '@/src/domain/types'
 import { TypeBadge } from './TypeBadge'
 import { LoadingSpinner } from './LoadingSpinner'
@@ -16,6 +16,8 @@ interface MovieDetailViewProps {
 }
 
 export function MovieDetailView({ movie, loading, error }: MovieDetailViewProps) {
+  const router = useRouter()
+
   if (loading) return <LoadingSpinner />
   if (error) return <ErrorMessage message={error} />
   if (!movie) return null
@@ -24,12 +26,12 @@ export function MovieDetailView({ movie, loading, error }: MovieDetailViewProps)
 
   return (
     <div className="max-w-4xl mx-auto">
-      <Link
-        href="/"
+      <button
+        onClick={() => router.back()}
         className="inline-flex items-center gap-2 text-zinc-400 hover:text-yellow-400 transition-colors mb-8 text-sm"
       >
-        ← Back to search
-      </Link>
+        ← Back to results
+      </button>
 
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-64 shrink-0">
