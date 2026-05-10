@@ -1,14 +1,20 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 
 interface SearchBarProps {
   onSearch: (query: string) => void
   loading: boolean
+  defaultQuery?: string
 }
 
-export function SearchBar({ onSearch, loading }: SearchBarProps) {
-  const [value, setValue] = useState('')
+export function SearchBar({ onSearch, loading, defaultQuery = '' }: SearchBarProps) {
+  const [value, setValue] = useState(defaultQuery)
+
+  // Sync input value when defaultQuery changes (e.g. on back-navigation)
+  useEffect(() => {
+    setValue(defaultQuery)
+  }, [defaultQuery])
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()

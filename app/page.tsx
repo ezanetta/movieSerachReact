@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { OmdbMovieRepository } from '@/src/infrastructure/OmdbMovieRepository'
 import { useMovieSearch } from '@/src/application/useMovieSearch'
 import { SearchBar } from '@/src/components/SearchBar'
@@ -10,6 +11,10 @@ import { ErrorMessage } from '@/src/components/ErrorMessage'
 import { EmptyState } from '@/src/components/EmptyState'
 
 export default function HomePage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const query = searchParams.get('q') ?? ''
+
   const repository = useMemo(
     () => new OmdbMovieRepository(process.env.NEXT_PUBLIC_OMDB_API_KEY!),
     []
@@ -17,7 +22,19 @@ export default function HomePage() {
   const { results, totalResults, loading, error, hasMore, search, loadMore } =
     useMovieSearch(repository)
 
-  const searched = results.length > 0 || error !== null
+  // Re-run search whenever the URL query changes (including on back-navigation)
+  useEffect(() => {
+    if (query) {
+      search(query)
+    }
+  }, [query, search])
+
+  function handleSearch(newQuery: string) {
+    if (!newQuery.trim()) return
+    const params = new URLSearchParams()
+    params.set('q', newQuery.trim())
+    router.push(`/?${params.toString()}`)
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -28,14 +45,14 @@ export default function HomePage() {
               🎬 CineSearch
             </span>
             <div className="flex-1">
-              <SearchBar onSearch={search} loading={loading} />
+              <SearchBar onSearch={handleSearch} loading={loading} defaultQuery={query} />
             </div>
           </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {!searched && !loading && <EmptyState />}
+        {!query && !loading && <EmptyState />}
 
         {loading && results.length === 0 && <LoadingSpinner />}
 
